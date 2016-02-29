@@ -9,6 +9,7 @@ private:
 	HINSTANCE m_Instance;
 	WNDPROC m_WindProc;
 	HWND m_Window;
+
 	
 public:
 	// === Constructor / Destructor
