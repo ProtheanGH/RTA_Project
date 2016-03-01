@@ -1,6 +1,7 @@
 #include <ctime>
 
 #include "Application.h"
+#include "FBXConverter.h"
 
 #pragma comment(lib, "d3d11.lib")
 
@@ -12,6 +13,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wparam, LPARAM lparam);
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR, int)
 {
+	FBXConverter converter;
+	Object* obj = Object::Create();
+	converter.LoadFBX("Cube.fbx", obj);
+
 	srand(unsigned int(time(0)));
 	pApp = new Application(hInstance, (WNDPROC)WndProc);
 	MSG msg; ZeroMemory(&msg, sizeof(msg));
