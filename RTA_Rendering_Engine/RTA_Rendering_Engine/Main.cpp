@@ -15,7 +15,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR, int)
 {
 	FBXConverter converter;
 	Object* obj = Object::Create();
-	converter.LoadFBX("Cube.fbx", obj);
+	converter.LoadFBX("chest_epic.fbx", obj);
 
 	srand(unsigned int(time(0)));
 	pApp = new Application(hInstance, (WNDPROC)WndProc);

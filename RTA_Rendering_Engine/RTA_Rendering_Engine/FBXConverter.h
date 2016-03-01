@@ -14,6 +14,7 @@ private:
 	void LoadMesh(FbxMesh* _mesh, Object* object);
 
 	void LoadNormal(FbxMesh* _mesh, int _controlPointIndex, int _vertexCounter, DirectX::XMFLOAT3& _outNormal);
+	void LoadUV(FbxMesh* _mesh, int _controlPointIndex, int _textureUVIndex, DirectX::XMFLOAT2& _outUV);
 
 public:
 	FBXConverter();

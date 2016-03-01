@@ -9,7 +9,7 @@ FBXConverter::~FBXConverter(){
 }
 
 void FBXConverter::LoadFBX(const char* _fileName, Object* _rootObject){
-	
+
 	if (fbxManager == nullptr){
 		fbxManager = FbxManager::Create();
 		FbxIOSettings* ioSettings = FbxIOSettings::Create(fbxManager, IOSROOT);
@@ -45,7 +45,7 @@ void FBXConverter::LoadFBX(FbxNode* _rootNode, Object* _rootObject){
 	//FbxDouble3 translation = _rootNode->LclTranslation.Get();
 	//FbxDouble3 rotation = _rootNode->LclRotation.Get();
 	//FbxDouble3 scale = _rootNode->LclScaling.Get();
-	
+
 	for (int i = 0; i < child_count; ++i){
 		FbxNode* child_node = _rootNode->GetChild(i);
 
@@ -83,14 +83,20 @@ void FBXConverter::LoadMesh(FbxMesh* _mesh, Object* _object){
 			vertex.pos[0] = (float)vertices[controlPointIndex].mData[0];
 			vertex.pos[1] = (float)vertices[controlPointIndex].mData[1];
 			vertex.pos[2] = (float)vertices[controlPointIndex].mData[2];
-			DirectX::XMFLOAT3 normal;
 
+			DirectX::XMFLOAT3 normal;
 			LoadNormal(_mesh, controlPointIndex, vertexCount, normal);
 			vertex.normal[0] = normal.x;
 			vertex.normal[1] = normal.y;
 			vertex.normal[2] = normal.z;
 
+			DirectX::XMFLOAT2 uv;
+			LoadUV(_mesh, controlPointIndex, _mesh->GetTextureUVIndex(i, j), uv);
+			vertex.uv[0] = uv.x;
+			vertex.uv[1] = uv.y;
+
 			object_mesh->GetVerts().push_back(vertex);
+
 			++vertexCount;
 		}
 	}
@@ -102,8 +108,6 @@ void FBXConverter::LoadMesh(FbxMesh* _mesh, Object* _object){
 		object_mesh->GetIndices().push_back(index);
 	}
 
-	FbxStringList uv_set_names;
-	_mesh->GetUVSetNames(uv_set_names);
 }
 
 void FBXConverter::LoadNormal(FbxMesh* _mesh, int _controlPointIndex, int _vertexCounter, DirectX::XMFLOAT3& _outNormal){
@@ -118,7 +122,7 @@ void FBXConverter::LoadNormal(FbxMesh* _mesh, int _controlPointIndex, int _verte
 			_outNormal.y = (float)(vertex_normal->GetDirectArray().GetAt(_controlPointIndex).mData[1]);
 			_outNormal.z = (float)(vertex_normal->GetDirectArray().GetAt(_controlPointIndex).mData[2]);
 		}
-		else if (vertex_normal->GetReferenceMode() == FbxGeometryElement::eIndexToDirect){	
+		else if (vertex_normal->GetReferenceMode() == FbxGeometryElement::eIndexToDirect){
 			int index = vertex_normal->GetIndexArray().GetAt(_controlPointIndex);
 			_outNormal.x = (float)(vertex_normal->GetDirectArray().GetAt(index).mData[0]);
 			_outNormal.y = (float)(vertex_normal->GetDirectArray().GetAt(index).mData[1]);
@@ -131,7 +135,7 @@ void FBXConverter::LoadNormal(FbxMesh* _mesh, int _controlPointIndex, int _verte
 			_outNormal.y = (float)(vertex_normal->GetDirectArray().GetAt(_vertexCounter).mData[1]);
 			_outNormal.z = (float)(vertex_normal->GetDirectArray().GetAt(_vertexCounter).mData[2]);
 		}
-		else if (vertex_normal->GetReferenceMode() == FbxGeometryElement::eIndexToDirect){	
+		else if (vertex_normal->GetReferenceMode() == FbxGeometryElement::eIndexToDirect){
 			int index = vertex_normal->GetIndexArray().GetAt(_vertexCounter);
 			_outNormal.x = (float)(vertex_normal->GetDirectArray().GetAt(index).mData[0]);
 			_outNormal.y = (float)(vertex_normal->GetDirectArray().GetAt(index).mData[1]);
@@ -139,6 +143,33 @@ void FBXConverter::LoadNormal(FbxMesh* _mesh, int _controlPointIndex, int _verte
 		}
 	}
 }
+
+void FBXConverter::LoadUV(FbxMesh* _mesh, int _controlPointIndex, int _textureUVIndex, DirectX::XMFLOAT2& _outUV){
+
+	if (_mesh->GetElementUVCount() < 1) return;
+
+	FbxGeometryElementUV* vertex_uv = _mesh->GetElementUV();
+
+	if (vertex_uv->GetMappingMode() == FbxGeometryElement::eByControlPoint){
+		if (vertex_uv->GetReferenceMode() == FbxGeometryElement::eDirect){
+			_outUV.x = (float)vertex_uv->GetDirectArray().GetAt(_controlPointIndex).mData[0];
+			_outUV.y = (float)vertex_uv->GetDirectArray().GetAt(_controlPointIndex).mData[1];
+
+		}
+		else if (vertex_uv->GetReferenceMode() == FbxGeometryElement::eIndexToDirect){
+			int index = vertex_uv->GetIndexArray().GetAt(_controlPointIndex);
+			_outUV.x = (float)vertex_uv->GetDirectArray().GetAt(index).mData[0];
+			_outUV.y = (float)vertex_uv->GetDirectArray().GetAt(index).mData[1];
+		}
+	}
+	else if (vertex_uv->GetMappingMode() == FbxGeometryElement::eByPolygonVertex){
+		if (vertex_uv->GetReferenceMode() == FbxGeometryElement::eIndexToDirect){
+			_outUV.x = (float)vertex_uv->GetDirectArray().GetAt(_textureUVIndex).mData[0];
+			_outUV.y = (float)vertex_uv->GetDirectArray().GetAt(_textureUVIndex).mData[1];
+		}
+	}
+}
+
 
 void FBXConverter::SaveObject(const char* _fileName, Object& _object){
 
