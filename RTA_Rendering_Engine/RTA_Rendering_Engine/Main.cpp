@@ -13,10 +13,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wparam, LPARAM lparam);
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR, int)
 {
-	FBXConverter converter;
-	Object* obj = Object::Create();
-	converter.LoadFBX("chest_epic.fbx", obj);
-
 	srand(unsigned int(time(0)));
 	pApp = new Application(hInstance, (WNDPROC)WndProc);
 	MSG msg; ZeroMemory(&msg, sizeof(msg));
