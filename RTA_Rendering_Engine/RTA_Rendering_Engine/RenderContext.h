@@ -1,6 +1,7 @@
 #pragma once
 #include "RenderNode.h"
 #include "RenderSet.h"
+#include "RasterizerStateManager.h"
 
 #include <d3d11.h>
 
@@ -10,12 +11,11 @@ class RenderContext : public RenderNode
 {
 private: 
 	// === Members
-	ID3D11VertexShader*		m_pVertexShader;
-	ID3D11PixelShader*		m_pPixelShader;
-	ID3D11BlendState*		m_pBlendState;
-	ID3D11RasterizerState*	m_pRasterizerState;
-	ID3D11DepthStencilView* m_pDepthStencilView;
-	RenderSet				m_RMaterialSet;
+	ID3D11VertexShader*			m_pVertexShader;
+	ID3D11PixelShader*			m_pPixelShader;
+	ID3D11BlendState*			m_pBlendState;
+	RasterizerStates			m_RasterizerStateType;
+	RenderSet					m_RMaterialSet;
 
 	// === Private Interface === //
 	void Apply();
@@ -34,12 +34,12 @@ public:
 	// ================= //
 
 	// === Mutators === //
-	inline void SetSetting(ID3D11VertexShader* _vertexShader = nullptr, ID3D11PixelShader* _pixelShader = nullptr, ID3D11BlendState* _blendState = nullptr, ID3D11RasterizerState* _rasterizerState = nullptr, ID3D11DepthStencilView* _depthStencilView = nullptr) {
+	inline void SetSetting(ID3D11VertexShader* _vertexShader = nullptr, ID3D11PixelShader* _pixelShader = nullptr, ID3D11BlendState* _blendState = nullptr, ID3D11RasterizerState* _rasterizerState = nullptr, ID3D11DepthStencilState* _depthStencilState = nullptr) {
 		m_pVertexShader = _vertexShader;
 		m_pPixelShader = _pixelShader;
 		m_pBlendState = _blendState;
 		m_pRasterizerState = _rasterizerState;
-		m_pDepthStencilView = _depthStencilView;
+		m_pDepthStencilState = _depthStencilState;
 	}
 	inline void SetVertexShader(ID3D11VertexShader* _vertexShader) {
 		m_pVertexShader = _vertexShader;
@@ -53,8 +53,8 @@ public:
 	inline void SetRasterizerState(ID3D11RasterizerState* _rasterizerState) {
 		m_pRasterizerState = _rasterizerState;
 	}
-	inline void SetDepthStencilView(ID3D11DepthStencilView* _depthStencilView) {
-		m_pDepthStencilView = _depthStencilView;
+	inline void SetDepthStencilView(ID3D11DepthStencilState* _depthStencilState) {
+		m_pDepthStencilState = _depthStencilState;
 	}
 	// ================ //
 };

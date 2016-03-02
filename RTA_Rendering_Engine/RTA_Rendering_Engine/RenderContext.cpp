@@ -9,7 +9,9 @@ RenderContext::RenderContext() : RenderNode()
 	m_pPixelShader = nullptr;
 	m_pBlendState = nullptr;
 	m_pRasterizerState = nullptr;
-	m_pDepthStencilView = nullptr;
+	m_pDepthStencilState = nullptr;
+
+	m_StencilRef = 0;
 }
 
 RenderContext::~RenderContext()
@@ -19,7 +21,6 @@ RenderContext::~RenderContext()
 	SAFE_RELEASE(m_pPixelShader);
 	SAFE_RELEASE(m_pBlendState);
 	SAFE_RELEASE(m_pRasterizerState);
-	SAFE_RELEASE(m_pDepthStencilView);
 }
 // ==================================== //
 
@@ -46,11 +47,16 @@ void RenderContext::Apply()
 		deviceContext->VSSetShader(m_pVertexShader, NULL, 0);
 	if (m_pPixelShader != nullptr)
 		deviceContext->PSSetShader(m_pPixelShader, NULL, 0);
+	if (m_pBlendState != nullptr)
+		deviceContext->OMSetBlendState(m_pBlendState, NULL, 0xFFFFFFFF);
+
+	RasterizerStateManager::GetInstance()->Apply(m_RasterizerStateType);
 }
 
 void RenderContext::Revert()
 {
-
+	// === Revert to Defaults
+	RasterizerStateManager::GetInstance()->Revert();
 }
 
 void RenderContext::DefaultContext_RenderProcess(RenderNode& _node)
