@@ -48,6 +48,9 @@
     <ClCompile Include="RenderNode.cpp">
       <Filter>Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="BlendStateManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
@@ -73,6 +76,9 @@
     </ClInclude>
     <ClInclude Include="RenderMaterial.h">
       <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="BlendStateManager.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
