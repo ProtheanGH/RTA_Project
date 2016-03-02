@@ -1,6 +1,7 @@
 #include <ctime>
 
 #include "Application.h"
+#include "FBXConverter.h"
 
 #pragma comment(lib, "d3d11.lib")
 
