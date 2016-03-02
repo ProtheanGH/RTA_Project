@@ -16,6 +16,9 @@
     <Filter Include="Renderer">
       <UniqueIdentifier>{59fe591d-faa4-493d-bc8b-29fe04f3e227}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{3112c3aa-7341-450b-b63c-1d873ab30042}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -71,5 +74,13 @@
     <ClInclude Include="RenderMaterial.h">
       <Filter>Renderer</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shaders\DefaultPixel.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\DefaultVertex.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
