@@ -22,11 +22,17 @@ struct OUTPUT_VERTEX
 // ===
 
 
+
+texture2D image : register(t0);
+
+SamplerState filter : register(s0);
+
+
 // === BUFFERS === //
-cbuffer DIRECTIONAL_LIGHT_BUFFER : register(b0)
+cbuffer DIFFUSE_LIGHT_BUFFER : register(b0)
 {
-	float4 lightDirection : DIRECTION;
-	float4 lightColor : COLOR;
+	float4 diffuseLightDirection : DIRECTION;
+	float4 diffuseLightColor : COLOR;
 }
 
 cbuffer POINTLIGHT_BUFFER : register(b1)
@@ -52,7 +58,52 @@ cbuffer SPECULAR_BUFFER : register(b3)
 
 float4 main( OUTPUT_VERTEX _input ) : SV_TARGET
 {
-	return float4(1.0f, 1.0f, 1.0f, 1.0f);
+	float4 imageColor = image.Sample(filter, _input.uv);
+
+
+	// === Directional Light === //
+	float directionRatio = saturate(dot(-diffuseLightDirection, _input.normals));
+	float4 directionResult = directionRatio * diffuseLightColor * imageColor;
+	directionResult.w = 1;
+
+
+	// === Point Light === //
+	float4 pointDirection = normalize(pointLightPosition - _input.worldPosition);
+	float pointRatio = saturate(dot(pointDirection, _input.normals));
+	float4 pointResult = pointRatio * pointLightColor * imageColor;
+	pointResult.w = 1;
+
+
+	// === Spot Light === //
+	float4 spotlightConeDirection = normalize(spotlightPosition - _input.worldPosition);
+	float  spotRatio = saturate(dot(spotlightDirection, -spotlightConeDirection));
+	float  spotFactor = (spotRatio > spotlightConeRatio.y) ? 1.0f : 0.0f;
+	float  spotlightRatio = saturate(dot(spotlightConeDirection.y, _input.normals));
+	float attenuation = 1.0f - saturate((spotlightConeRatio.x - spotRatio) / (spotlightConeRatio.x - spotlightConeRatio.y));
+	attenuation *= attenuation;
+	float4 spotlightResult = spotFactor * spotRatio * spotlightColor * imageColor * attenuation;
+	// ===
+
+
+	// === Specular Light Using Spot Light === //
+	float4 toCamDirection = normalize(specularPosition - _input.worldPosition);
+	float4 reflection = normalize(reflect(-spotlightConeDirection, _input.normals));
+	float  intensity = pow(saturate(dot(reflection, toCamDirection)), 128);
+	float4 spotLightSpecularResult = saturate(intensity * spotFactor * spotlightRatio * attenuation * float4(1.0f, 1.0f, 1.0f, 1.0f));
+
+	// === Specular Light Using Point Light === //
+	toCamDirection = normalize(specularPosition - _input.worldPosition);
+	reflection = normalize(reflect(-pointDirection, _input.normals));
+	intensity = pow(saturate(dot(reflection, toCamDirection)), 128);
+	float4 pointLightSpecularResult = saturate(intensity * float4(1.0f, 1.0f, 1.0f, 1.0f));
+
+	// === Create a Greyscale === //
+	float4 greyScale = { 0.25f, 0.25f, 0.25f, 0.25f };
+	greyScale = greyScale * imageColor;
+	// ===
+
+
+	return saturate(directionResult + pointResult + spotlightResult + greyScale + spotLightSpecularResult + pointLightSpecularResult);
 }
 
 
