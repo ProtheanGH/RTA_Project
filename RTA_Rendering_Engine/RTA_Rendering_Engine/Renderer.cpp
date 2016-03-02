@@ -1,7 +1,5 @@
 #include "Renderer.h"
 
-
-
 #define SAFE_RELEASE(pointer) {if(pointer){pointer->Release(); pointer = nullptr;}}
 
 // Instantiate static instance
@@ -112,7 +110,7 @@ void Renderer::Initialize(HWND _window, const int _samplerCount, const int _scre
 
 	hr = device->CreateTexture2D(&textureDesc, nullptr, &depthStencil);
 	assert(hr == S_OK);
-	hr = device->CreateDepthStencilView(depthStencil, nullptr, &depthStencilView);
+	hr = device->CreateDepthStencilView(depthStencil, nullptr, &DSV);
 	assert(hr == S_OK);
 
 	// === Sampler Description === //
@@ -145,7 +143,6 @@ void Renderer::Terminate()
 	SAFE_RELEASE(swapChain);
 	SAFE_RELEASE(RTV);
 	SAFE_RELEASE(DSV);
-	SAFE_RELEASE(depthStencilView);
 	SAFE_RELEASE(deviceContext);
 	// SAFE_RELEASE(SRV); NOT BEING USED
 	SAFE_RELEASE(samplerState);

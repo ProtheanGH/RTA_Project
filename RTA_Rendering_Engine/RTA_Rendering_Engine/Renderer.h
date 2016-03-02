@@ -21,7 +21,6 @@ private:
 	IDXGISwapChain           *swapChain;
 	ID3D11RenderTargetView   *RTV;
 	ID3D11DepthStencilView   *DSV;
-	ID3D11DepthStencilView   *depthStencilView;
 	ID3D11DeviceContext      *deviceContext;
 	ID3D11ShaderResourceView *SRV;
 	ID3D11SamplerState       *samplerState;
@@ -56,9 +55,36 @@ public:
 	// ======================= //
 
 
-	// === Gameplay === //
+	// === Interface === //
 	void Render() const;
-	// ===
+	// ================= //
+
+	// === Accessors === //
+	inline ID3D11Device* GetDevice() {
+		return device;
+	}
+	inline IDXGISwapChain* GetSwapChain() {
+		return swapChain;
+	}
+	inline ID3D11RenderTargetView* GetRenderTargetView() {
+		return RTV;
+	}
+	inline ID3D11DepthStencilView* GetDepthStencilView() {
+		return DSV;
+	}
+	inline ID3D11DeviceContext* GetDeviceContext() {
+		return deviceContext;
+	}
+	inline ID3D11ShaderResourceView* GetShaderResourceView() {
+		return SRV;
+	}
+	inline ID3D11SamplerState* GetSamplerState() {
+		return samplerState;
+	}
+	inline D3D11_VIEWPORT GetViewport() {
+		return viewport;
+	}
+	// ================= //
 
 };
 

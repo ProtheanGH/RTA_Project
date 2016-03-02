@@ -1,4 +1,5 @@
 #include "RenderContext.h"
+#include "Renderer.h"
 
 // ===== Constructor / Destructor ===== //
 RenderContext::RenderContext() : RenderNode()
@@ -39,7 +40,12 @@ void RenderContext::Add(RenderNode* _rMaterial, RenderNode* _rShape)
 // ===== Private Interface ===== //
 void RenderContext::Apply()
 {
+	ID3D11DeviceContext* deviceContext = Renderer::GetInstance()->GetDeviceContext();
 
+	if (m_pVertexShader != nullptr)
+		deviceContext->VSSetShader(m_pVertexShader, NULL, 0);
+	if (m_pPixelShader != nullptr)
+		deviceContext->PSSetShader(m_pPixelShader, NULL, 0);
 }
 
 void RenderContext::Revert()

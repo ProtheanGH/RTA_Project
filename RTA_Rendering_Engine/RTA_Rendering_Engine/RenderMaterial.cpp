@@ -14,6 +14,13 @@ RenderMaterial::~RenderMaterial()
 }
 // ==================================== //
 
+// ===== Interface ===== //
+void RenderMaterial::Add(RenderNode* _rMaterial, RenderNode* _rShape)
+{
+
+}
+// ===================== //
+
 // ===== Private Interface ===== //
 void RenderMaterial::Apply()
 {
